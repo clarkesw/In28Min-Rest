@@ -1,12 +1,20 @@
 package com.clarke.rest.beans;
 
 import java.time.LocalDate;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
-
+@Getter 
+@Setter 
+@ToString 
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
-    private int id;
+    
+    private Integer id;
     private String name;
     private LocalDate bday;
-    
-    
 }
