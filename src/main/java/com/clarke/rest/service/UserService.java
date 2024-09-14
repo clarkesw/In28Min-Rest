@@ -13,6 +13,7 @@ public class UserService {
     private static List<User> users = new ArrayList<>();
     
     static{
+        users.add(new User(0,"Nobody",LocalDate.parse("1993-01-03")));
         users.add(new User(1,"Clarke",LocalDate.parse("1975-10-07")));
         users.add(new User(2,"Ranga",LocalDate.parse("2001-01-08")));
     }
@@ -23,6 +24,11 @@ public class UserService {
     
     public User findUser(int id){
         return users.get(id);
+    }
+    
+    public void addUser(User user){
+  //      int id = users.size() + ;
+        users.add(user);
     }
     
     private User findUserLambda(int id){

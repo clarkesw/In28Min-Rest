@@ -17,4 +17,10 @@ public class User {
     private Integer id;
     private String name;
     private LocalDate bday;
+    
+    public User(User user){
+        this.id = user.id;
+        this.name = user.name;
+        this.bday = user.bday;
+    }
 }
