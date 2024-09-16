@@ -15,5 +15,10 @@ public class HelloController {
     @GetMapping("/hello-bean")
     public Hello getWorldBean(){
         return new Hello("Gogo Gadget");
-    }    
+    }   
+    
+    @GetMapping("/hello-bean-international")
+    public Hello getWorldInternationalizedBean(){
+        return new Hello("Gogo Gadget");
+    }     
 }
