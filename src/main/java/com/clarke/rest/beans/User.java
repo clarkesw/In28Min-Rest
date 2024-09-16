@@ -1,5 +1,7 @@
 package com.clarke.rest.beans;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PastOrPresent;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,7 +17,9 @@ import lombok.ToString;
 public class User {
     
     private Integer id;
+    @NotBlank(message = "Name is mandatory.")
     private String name;
+    @PastOrPresent(message = "Birthday should be in the Past.")
     private LocalDate bday;
     
     public User(User user){

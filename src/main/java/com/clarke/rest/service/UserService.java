@@ -23,21 +23,25 @@ public class UserService {
     }
     
     public User findUser(int id){
-        return users.get(id);
+        Optional<User> user = users.stream()
+            .filter(us -> us.getId() == id)
+            .findFirst();
+        return user.orElse(null);
     }
     
-    public void addUser(User user){
-  //      int id = users.size() + ;
+    public User addUser(User user){
+        //      int id = users.size() + ;
         users.add(user);
+       
+        Optional<User> findFirst = users.stream()
+            .filter(us -> us.getName().equals(user.getName()))
+            .findFirst();
+        return findFirst.orElse(null);
     }
     
-    private User findUserLambda(int id){
-        
-        // Optional<User> findFirst =
-        Optional<User> findFirst = users.stream()
-                .filter(use -> use.getId().equals(id))
-                .findFirst();
-               
-        return findFirst.get();
-    }
+    public User deleteUser(int id){
+        User user = users.remove(id);
+
+        return user;
+    }    
 }
