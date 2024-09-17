@@ -1,5 +1,7 @@
 package com.clarke.rest.controller;
 
+ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+
 import com.clarke.rest.beans.User;
 import com.clarke.rest.exception.UserNotFoundException;
 import com.clarke.rest.service.UserService;
@@ -8,6 +10,8 @@ import java.net.URI;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,20 +34,24 @@ public class UserController {
         return userServ.getAllUsers();
     }
     
-    @GetMapping("/users/{idi}")
-    public User findUser(@PathVariable("idi") int id){
+    @GetMapping("/users/{id}")
+    public EntityModel<User> findUser(@PathVariable("id") int id){
         log.debug("GET \"/users/" + id);
         User user = userServ.findUser(id);
         if(user == null)
             throw new UserNotFoundException("User ID: " + id + " Not Found");
-        return user;
+        
+        EntityModel<User> model = EntityModel.of(user);
+        WebMvcLinkBuilder link = linkTo(methodOn(this.getClass()).getAllUsers());
+        model.add(link.withRel("all-users"));
+        return model;
     }  
     
     @PostMapping("/users")
     public ResponseEntity<User> addUser(@Valid @RequestBody User user){
         log.debug("POST \"/users/" + user);
-        user = userServ.addUser(user);
         
+        user = userServ.addUser(user);        
         String url = "/users/" + user.getId();
         
         URI toUri = ServletUriComponentsBuilder
