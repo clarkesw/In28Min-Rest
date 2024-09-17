@@ -2,8 +2,6 @@ package com.clarke.rest.service;
 
 import com.clarke.rest.beans.User;
 import com.clarke.rest.repository.UserRepository;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
