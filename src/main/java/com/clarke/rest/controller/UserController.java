@@ -8,6 +8,7 @@ import com.clarke.rest.service.UserService;
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
@@ -30,19 +31,20 @@ public class UserController {
     private UserService userServ;
     
     @GetMapping("/users")
-    public List<User> getAllUsers(){
-        return userServ.getAllUsers();
+    public List<User> findAll(){
+        return userServ.findAll();
     }
     
     @GetMapping("/users/{id}")
     public EntityModel<User> findUser(@PathVariable("id") int id){
         log.debug("GET \"/users/" + id);
-        User user = userServ.findUser(id);
-        if(user == null)
+        Optional<User> userOp = userServ.findById(id);
+        if(userOp.isEmpty())
             throw new UserNotFoundException("User ID: " + id + " Not Found");
         
+        User user = userOp.get();
         EntityModel<User> model = EntityModel.of(user);
-        WebMvcLinkBuilder link = linkTo(methodOn(this.getClass()).getAllUsers());
+        WebMvcLinkBuilder link = linkTo(methodOn(this.getClass()).findAll());
         model.add(link.withRel("all-users"));
         return model;
     }  
@@ -51,7 +53,7 @@ public class UserController {
     public ResponseEntity<User> addUser(@Valid @RequestBody User user){
         log.debug("POST \"/users/" + user);
         
-        user = userServ.addUser(user);        
+        user = userServ.save(user);        
         String url = "/users/" + user.getId();
         
         URI toUri = ServletUriComponentsBuilder
@@ -63,12 +65,9 @@ public class UserController {
         return ResponseEntity.created(toUri).build();
     }
     
-    @DeleteMapping("/users/{idi}")
-    public User deleteUser(@PathVariable("idi") int id){
+    @DeleteMapping("/users/{id}")
+    public void deleteUser(@PathVariable("id") int id){
         log.debug("DELETE \"/users/" + id);
-        User user = userServ.deleteUser(id);
-        if(user == null)
-            throw new UserNotFoundException("User ID: " + id + " Not Found");
-        return user;
+        userServ.deleteUser(id);
     }      
 }
