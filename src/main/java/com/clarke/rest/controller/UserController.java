@@ -1,5 +1,6 @@
 package com.clarke.rest.controller;
 
+import com.clarke.rest.beans.Post;
  import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 import com.clarke.rest.beans.User;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
@@ -30,8 +32,13 @@ public class UserController {
     @Autowired
     private UserService userServ;
     
+    @Value("${spring.datasource.url}") 
+    private String sUrl;
+    
     @GetMapping("/users")
     public List<User> findAll(){
+        log.debug("GET \"/users");
+        System.out.println("URL from application.properties: " + sUrl);
         return userServ.findAll();
     }
     
@@ -42,19 +49,24 @@ public class UserController {
         if(userOp.isEmpty())
             throw new UserNotFoundException("User ID: " + id + " Not Found");
         
-        User user = userOp.get();
-        EntityModel<User> model = EntityModel.of(user);
-        WebMvcLinkBuilder link = linkTo(methodOn(this.getClass()).findAll());
-        model.add(link.withRel("all-users"));
-        return model;
+        return getHateoasLink(userOp.get());
     }  
+   
+    @GetMapping("/users/{id}/posts")
+    public List<Post> findPostsByUserId(@PathVariable("id") int id){
+        log.debug("GET \"/users/" + id);
+        Optional<User> userOp = userServ.findById(id);
+        if(userOp.isEmpty())
+            throw new UserNotFoundException("User ID: " + id + " Not Found");
+        
+        return userOp.get().getPosts();
+    }  
+     
     
     @PostMapping("/users")
     public ResponseEntity<User> addUser(@Valid @RequestBody User user){
         log.debug("POST \"/users/" + user);
-        
         user = userServ.save(user);        
-        String url = "/users/" + user.getId();
         
         URI toUri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -70,4 +82,10 @@ public class UserController {
         log.debug("DELETE \"/users/" + id);
         userServ.deleteUser(id);
     }      
+    
+    private <T> EntityModel<T> getHateoasLink(T t){
+        EntityModel<T> model = EntityModel.of(t);
+        WebMvcLinkBuilder link = linkTo(methodOn(this.getClass()).findAll());
+        return model.add(link.withRel("all-users"));    
+    }
 }
