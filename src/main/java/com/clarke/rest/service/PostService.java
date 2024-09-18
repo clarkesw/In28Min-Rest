@@ -4,9 +4,11 @@ import com.clarke.rest.beans.Post;
 import com.clarke.rest.repository.PostRepository;
 import java.util.List;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class PostService {
     
@@ -22,6 +24,7 @@ public class PostService {
     }
     
     public Post save(Post post){
+        log.debug(post.toString());
         return repo.save(post);
     }
     

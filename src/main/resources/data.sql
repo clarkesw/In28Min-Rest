@@ -9,4 +9,4 @@ values(1, 2, 'I like to wax things', 'Past Time');
 insert into post
 values(2, 2, 'They hold up your pants', 'Belts');
 insert into post
-values(3, 2, 'I am gay for AA', 'AA');
+values(3, 3, 'I am gay for AA', 'AA');
