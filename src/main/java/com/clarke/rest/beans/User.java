@@ -1,5 +1,6 @@
 package com.clarke.rest.beans;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -9,6 +10,7 @@ import jakarta.persistence.SequenceGenerator;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PastOrPresent;
 import java.time.LocalDate;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,16 +26,17 @@ import lombok.ToString;
 public class User {
     
     @Id
-    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "seq_post")
-    @SequenceGenerator(name = "seq_post", initialValue=5)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "usr_post")
+    @SequenceGenerator(name = "usr_post", initialValue=5)
     private Integer id;
     @NotBlank(message = "Name is mandatory.")
     private String name;
     @PastOrPresent(message = "Birthday should be in the Past.")
     private LocalDate bday;
     
-//    @OneToMany
-//    private Post posts;
+    @JsonIgnore
+    @OneToMany(mappedBy="user")
+    private List<Post> posts;
     
     public User(User user){
         this.id = user.id;
