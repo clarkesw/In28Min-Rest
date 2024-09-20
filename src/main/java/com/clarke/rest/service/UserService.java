@@ -4,10 +4,11 @@ import com.clarke.rest.beans.User;
 import com.clarke.rest.repository.UserRepository;
 import java.util.List;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
+@Slf4j
 @Service
 public class UserService {
     
@@ -23,6 +24,7 @@ public class UserService {
     }
     
     public User save(User user){
+        log.debug("User: " + user);
         return repo.save(user);
     }
     

@@ -39,6 +39,7 @@ public class UserController {
     public EntityModel<User> findUser(@PathVariable("id") int id){
         log.debug("GET \"/users/" + id);
         Optional<User> userOp = userServ.findById(id);
+        log.debug("User: " + userOp);
         if(userOp.isEmpty())
             throw new UserNotFoundException("User ID: " + id + " Not Found");
         
@@ -55,7 +56,7 @@ public class UserController {
         
         user = userServ.save(user);        
         String url = "/users/" + user.getId();
-        
+        log.debug("User: " + user);
         URI toUri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
